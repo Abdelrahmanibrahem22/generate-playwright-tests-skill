@@ -43,9 +43,23 @@ Options:
 Default target: ./.claude/skills/${SKILL}`);
 }
 
+function sameSkill(dest) {
+  try {
+    const a = fs.readFileSync(path.join(source, 'SKILL.md'), 'utf8');
+    const b = fs.readFileSync(path.join(dest, 'SKILL.md'), 'utf8');
+    return a === b;
+  } catch {
+    return false;
+  }
+}
+
 function install() {
   const dest = path.join(skillsRoot(), SKILL);
   if (fs.existsSync(dest) && !has('--force')) {
+    if (sameSkill(dest)) {
+      console.log(`Already up to date at ${dest}`);
+      return;
+    }
     fail(`${dest} already exists. Use --force to overwrite.`);
   }
   fs.mkdirSync(path.dirname(dest), { recursive: true });
@@ -61,7 +75,31 @@ function uninstall() {
   console.log(`Removed ${dest}`);
 }
 
+// Runs automatically after `npm install`. Copies the skill out of node_modules
+// into the skills folder. Never fails the npm install.
+function postinstall() {
+  try {
+    const isGlobal = process.env.npm_config_global === 'true';
+    const projectDir = process.env.INIT_CWD;
+    const packageRoot = path.resolve(__dirname, '..');
+    if (!isGlobal && (!projectDir || path.resolve(projectDir) === packageRoot)) return;
+    const root = isGlobal
+      ? path.join(os.homedir(), '.claude', 'skills')
+      : path.join(projectDir, '.claude', 'skills');
+    const dest = path.join(root, SKILL);
+    fs.mkdirSync(root, { recursive: true });
+    fs.cpSync(source, dest, { recursive: true, force: true });
+    console.log(`[${SKILL}] skill installed to ${dest}`);
+  } catch (error) {
+    console.warn(`[${SKILL}] could not copy the skill: ${error.message}`);
+    console.warn(`Run: npx generate-playwright-tests-skill install`);
+  }
+}
+
 switch (command) {
+  case 'postinstall':
+    postinstall();
+    break;
   case 'install':
     install();
     break;

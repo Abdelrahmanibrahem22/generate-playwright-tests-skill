@@ -46,6 +46,20 @@ npx generate-playwright-tests-skill uninstall
 
 The skill is copied to `.claude/skills/generate-playwright-tests/SKILL.md`.
 
+### Install from GitHub
+
+```bash
+npx github:Abdelrahmanibrahem22/generate-playwright-tests-skill install
+```
+
+### Install with `npm install`
+
+```bash
+npm install -D github:Abdelrahmanibrahem22/generate-playwright-tests-skill
+```
+
+A `postinstall` step copies the skill into `.claude/skills/generate-playwright-tests/` of your project (or `~/.claude/skills` with `npm install -g`). The package itself stays in `node_modules`, which is where npm always puts packages, and your agent reads the copy in `.claude/skills`. If your package manager blocks install scripts (pnpm does by default), run the `install` command above instead.
+
 ## Use
 
 Ask your agent, for example: "Automate the login flow" or "Write Playwright tests for the booking page". Supply the test data in your prompt, because the skill does not generate business data.
