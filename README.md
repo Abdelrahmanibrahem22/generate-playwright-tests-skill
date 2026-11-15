@@ -33,24 +33,24 @@ A pair of agent skills for writing consistent Playwright TypeScript UI tests and
 - The `playwright-cli` skill installed in your agent, for live-site exploration and failure triage
 - An agent that supports `SKILL.md` skills, such as Claude Code
 
-## Install
+## Install from GitHub
 
 Into the current project:
 
 ```bash
-npx generate-playwright-tests-skill install
+npx github:Abdelrahmanibrahem22/generate-playwright-tests-skill install
 ```
 
 For all your projects:
 
 ```bash
-npx generate-playwright-tests-skill install --global
+npx github:Abdelrahmanibrahem22/generate-playwright-tests-skill install --global
 ```
 
 For another agent, point at its skills folder:
 
 ```bash
-npx generate-playwright-tests-skill install --dir ./path/to/skills
+npx github:Abdelrahmanibrahem22/generate-playwright-tests-skill install --dir ./path/to/skills
 ```
 
 Each install command installs both skills. Existing identical skills are left in place; conflicting copies require `--force`. This also lets an older installation add `bug-reporting` alongside an unchanged test-generation skill.
@@ -58,7 +58,7 @@ Each install command installs both skills. Existing identical skills are left in
 Add `--force` to update existing skills to this version. To remove both skills:
 
 ```bash
-npx generate-playwright-tests-skill uninstall
+npx github:Abdelrahmanibrahem22/generate-playwright-tests-skill uninstall
 ```
 
 By default, the skills are copied to:
@@ -71,13 +71,7 @@ By default, the skills are copied to:
 
 The `--global` and `--dir` options also apply to `uninstall`. Uninstall removes whichever of the two skills are present and leaves other skills untouched.
 
-### Install from GitHub
-
-```bash
-npx github:Abdelrahmanibrahem22/generate-playwright-tests-skill install
-```
-
-### Install with `npm install`
+### Install from GitHub with `npm install`
 
 ```bash
 npm install -D github:Abdelrahmanibrahem22/generate-playwright-tests-skill

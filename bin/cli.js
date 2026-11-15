@@ -32,8 +32,8 @@ function help() {
   console.log(`generate-playwright-tests-skill
 
 Usage:
-  npx generate-playwright-tests-skill install [options]
-  npx generate-playwright-tests-skill uninstall [options]
+  npx github:Abdelrahmanibrahem22/generate-playwright-tests-skill install [options]
+  npx github:Abdelrahmanibrahem22/generate-playwright-tests-skill uninstall [options]
 
 Options:
   --global      Use ~/.claude/skills (all projects)
@@ -110,7 +110,7 @@ function postinstall() {
     }
   } catch (error) {
     console.warn(`[generate-playwright-tests-skill] could not copy the skills: ${error.message}`);
-    console.warn(`Run: npx generate-playwright-tests-skill install`);
+    console.warn(`Run: npx github:Abdelrahmanibrahem22/generate-playwright-tests-skill install`);
   }
 }
 

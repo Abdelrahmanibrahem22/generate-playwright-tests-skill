@@ -173,5 +173,5 @@ test('postinstall reports copy failures without failing npm installation', (t) =
   const result = w.run(['postinstall'], { INIT_CWD: w.project });
   success(result);
   assert.match(result.stderr, /could not copy the skills/);
-  assert.match(result.stderr, /npx generate-playwright-tests-skill install/);
+  assert.match(result.stderr, /npx github:Abdelrahmanibrahem22\/generate-playwright-tests-skill install/);
 });
