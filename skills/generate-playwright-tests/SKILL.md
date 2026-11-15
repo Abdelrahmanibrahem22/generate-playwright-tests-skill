@@ -23,7 +23,7 @@ Do not write test code before steps 1 and 2 are done.
 3. **Page objects.** Check `pages/` first, then reuse or extend. Never duplicate.
 4. **Write tests** using page objects, fixtures, and the test data supplied in the prompt. Add API helpers only where setup or teardown data is needed.
 5. **Verify.** Run `LANGUAGE=en npx playwright test <file>` and `LANGUAGE=ar npx playwright test <file>` separately. On failure, re-inspect the element with playwright-cli before changing the locator. Stop after 3 failed fix attempts and report the cause.
-6. **Report** using the Definition of Done and the final report format below.
+6. **Report** using the Definition of Done and the final report format below. If a failure may indicate an application defect, use the companion [bug-reporting skill](../bug-reporting/SKILL.md) to triage it and preserve evidence for confirmed defects. A failing test alone is not a confirmed defect.
 
 Exploration rules:
 - Refs (`e12`) drive the browser only and never appear in code. Derive locators from test ids, roles, and accessible names in the snapshot.
@@ -42,6 +42,7 @@ test-data/           *.json + typed loader (index.ts)
 api/                 typed API clients for setup and teardown data only
 utils/               helpers (getLanguage, unique values, dates)
 auth/                storage state (git-ignored)
+bug-reports/         confirmed defect reports and evidence (bug-reporting skill)
 ```
 
 Do not create other top-level folders. Test titles follow `should <result> when <condition>`.

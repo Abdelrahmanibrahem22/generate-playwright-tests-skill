@@ -1,7 +1,7 @@
 {
   "name": "generate-playwright-tests-skill",
-  "version": "1.1.0",
-  "description": "An AI agent skill (SKILL.md) that generates Playwright TypeScript UI tests using the Page Object Model, with en/ar runs, test.step in specs and assertions in page objects.",
+  "version": "1.2.0",
+  "description": "AI agent skills for Playwright TypeScript UI tests using the Page Object Model and confirmed bug reports with screenshot, video, and trace evidence.",
   "bin": {
     "generate-playwright-tests-skill": "bin/cli.js"
   },
@@ -19,7 +19,9 @@
     "agent-skill",
     "page-object-model",
     "test-automation",
-    "typescript"
+    "typescript",
+    "bug-reporting",
+    "defect-reporting"
   ],
   "engines": {
     "node": ">=18"
@@ -35,6 +37,7 @@
   },
   "homepage": "https://github.com/Abdelrahmanibrahem22/generate-playwright-tests-skill#readme",
   "scripts": {
+    "test": "node --test",
     "postinstall": "node bin/cli.js postinstall"
   }
 }

@@ -5,8 +5,8 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const SKILL = 'generate-playwright-tests';
-const source = path.join(__dirname, '..', 'skills', SKILL);
+const SKILLS = ['generate-playwright-tests', 'bug-reporting'];
+const sourceRoot = path.join(__dirname, '..', 'skills');
 const args = process.argv.slice(2);
 const command = args[0] && !args[0].startsWith('-') ? args[0] : 'help';
 
@@ -40,12 +40,15 @@ Options:
   --dir <path>  Use a custom skills folder (other agents)
   --force       Overwrite an existing install
 
-Default target: ./.claude/skills/${SKILL}`);
+Installs or removes both skills:
+  ${SKILLS.join('\n  ')}
+
+Default target: ./.claude/skills/<skill-name>`);
 }
 
-function sameSkill(dest) {
+function sameSkill(skill, dest) {
   try {
-    const a = fs.readFileSync(path.join(source, 'SKILL.md'), 'utf8');
+    const a = fs.readFileSync(path.join(sourceRoot, skill, 'SKILL.md'), 'utf8');
     const b = fs.readFileSync(path.join(dest, 'SKILL.md'), 'utf8');
     return a === b;
   } catch {
@@ -54,28 +57,41 @@ function sameSkill(dest) {
 }
 
 function install() {
-  const dest = path.join(skillsRoot(), SKILL);
-  if (fs.existsSync(dest) && !has('--force')) {
-    if (sameSkill(dest)) {
-      console.log(`Already up to date at ${dest}`);
-      return;
+  const root = skillsRoot();
+  // Check all destinations before copying so a conflict leaves both untouched.
+  for (const skill of SKILLS) {
+    const dest = path.join(root, skill);
+    if (fs.existsSync(dest) && !has('--force') && !sameSkill(skill, dest)) {
+      fail(`${dest} already exists. Use --force to overwrite.`);
     }
-    fail(`${dest} already exists. Use --force to overwrite.`);
   }
-  fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.cpSync(source, dest, { recursive: true, force: true });
-  console.log(`Installed skill to ${dest}`);
-  console.log('This skill also needs the playwright-cli skill to explore the live site.');
+  for (const skill of SKILLS) {
+    const dest = path.join(root, skill);
+    if (fs.existsSync(dest) && !has('--force')) {
+      console.log(`Already up to date at ${dest}`);
+      continue;
+    }
+    fs.mkdirSync(root, { recursive: true });
+    fs.cpSync(path.join(sourceRoot, skill), dest, { recursive: true, force: true });
+    console.log(`Installed skill to ${dest}`);
+  }
+  console.log('These skills also need the playwright-cli skill to explore and inspect the live site.');
 }
 
 function uninstall() {
-  const dest = path.join(skillsRoot(), SKILL);
-  if (!fs.existsSync(dest)) fail(`Nothing to remove at ${dest}.`);
-  fs.rmSync(dest, { recursive: true, force: true });
-  console.log(`Removed ${dest}`);
+  const root = skillsRoot();
+  let removed = false;
+  for (const skill of SKILLS) {
+    const dest = path.join(root, skill);
+    if (!fs.existsSync(dest)) continue;
+    fs.rmSync(dest, { recursive: true, force: true });
+    console.log(`Removed ${dest}`);
+    removed = true;
+  }
+  if (!removed) fail(`Nothing to remove at ${root}.`);
 }
 
-// Runs automatically after `npm install`. Copies the skill out of node_modules
+// Runs automatically after `npm install`. Copies the skills out of node_modules
 // into the skills folder. Never fails the npm install.
 function postinstall() {
   try {
@@ -86,12 +102,14 @@ function postinstall() {
     const root = isGlobal
       ? path.join(os.homedir(), '.claude', 'skills')
       : path.join(projectDir, '.claude', 'skills');
-    const dest = path.join(root, SKILL);
     fs.mkdirSync(root, { recursive: true });
-    fs.cpSync(source, dest, { recursive: true, force: true });
-    console.log(`[${SKILL}] skill installed to ${dest}`);
+    for (const skill of SKILLS) {
+      const dest = path.join(root, skill);
+      fs.cpSync(path.join(sourceRoot, skill), dest, { recursive: true, force: true });
+      console.log(`[${skill}] skill installed to ${dest}`);
+    }
   } catch (error) {
-    console.warn(`[${SKILL}] could not copy the skill: ${error.message}`);
+    console.warn(`[generate-playwright-tests-skill] could not copy the skills: ${error.message}`);
     console.warn(`Run: npx generate-playwright-tests-skill install`);
   }
 }
